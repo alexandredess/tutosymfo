@@ -71,6 +71,14 @@ class IngredientController extends AbstractController
         ]);
     }
 
+   
+    /**
+     * This controller update the ingredient in the database 
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/ingredient/edition/{id}','app_ingredient_edit', methods:['GET','POST'] )]
     public function edit(IngredientRepository $ingredientRepository, int $id,Request $request,EntityManagerInterface $manager) : Response
     {
@@ -96,5 +104,31 @@ class IngredientController extends AbstractController
         return $this->render('pages/ingredient/edit.html.twig',[
             'form'=>$form->createview()
         ]);
+    }
+
+    #[Route('/ingredient/suppression/{id}', 'app_ingredient_delete', methods:['GET'])]
+    public function delete(EntityManagerInterface $manager,int $id,IngredientRepository $ingredientRepository) : Response
+    {
+        
+        $ingredient = $ingredientRepository->findOneBy(["id"=>$id]);
+        //vérification si l'ingrédient existe
+        if(!$ingredient){
+            $this->addFlash(
+                'success',
+                "Votre ingrédient n'a pas été trouvé !"
+            );
+
+            return $this->redirectToRoute('app_ingredient');
+        }
+
+        $manager->remove($ingredient);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            'Votre ingrédient a été supprimé avec succès !'
+        );
+
+        return $this->redirectToRoute('app_ingredient');
     }
 }
