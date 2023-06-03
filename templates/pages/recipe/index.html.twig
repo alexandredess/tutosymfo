@@ -37,7 +37,7 @@
                 <td>{{(recipe.difficulty is same as(null)) ? "Non renseigné" : recipe.difficulty}}</td>
                 <td>{{ recipe.createdAt|date('d/m/Y') }}</td>
                 <td>
-					Todo
+					<a href="{{ path('app_recipe_edit', { id: recipe.id }) }}" class="btn btn-info">Modifier</a>
 				</td>
                 <td>
 					Todo
