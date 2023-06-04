@@ -60,6 +60,7 @@ class RecipeType extends AbstractType
                     'min'=>1,
                     'max'=>50
                 ],
+                'required'=>false,
                 'label'=>'nombre de personnes',
                 'label_attr'=>[
                     'class' => 'form-label mt-4'
@@ -76,6 +77,7 @@ class RecipeType extends AbstractType
                     'min'=>1,
                     'max'=>5
                 ],
+                'required'=>false,
                 'label'=>'Difficulté',
                 'label_attr'=>[
                     'class' => 'form-label mt-4'
@@ -103,6 +105,7 @@ class RecipeType extends AbstractType
                 'attr'=> [
                     'class'=>'form-control',
                 ],
+                'required'=>false,
                 'label'=>'Prix ',
                 'label_attr'=>[
                     'class' => 'form-label mt-4'
@@ -114,7 +117,7 @@ class RecipeType extends AbstractType
             ])
             ->add('isFavorite',CheckboxType::class,[
                 'attr'=> [
-                    'class'=>'form-control',
+                    'class'=>'form-check-input ms-3 mt-4',
                 ],
                 'required'=>false,
                 'label'=>'Favori ? ',
@@ -126,18 +129,18 @@ class RecipeType extends AbstractType
                 ]
             ])
             ->add('ingredients',EntityType::class,[
-                'label'=>'Les ingrédients ',
-                'label_attr'=>[
-                    'class' => 'form-label mt-4'
-                ],
                 'class'=>Ingredient::class,
                 'query_builder' => function (IngredientRepository $r) {
                     return $r->createQueryBuilder('i')
                         ->orderBy('i.name', 'ASC');
                 },
+                'label'=>'Les ingrédients ',
+                'label_attr'=>[
+                    'class' => 'form-label mt-4'
+                ],
                 'choice_label'=>'name',
-                'multiple'=>'true',
-                'expanded'=>'true',
+                'multiple'=>true,
+                'expanded'=>true,
             ])
             ->add('submit',SubmitType::class,[
                 'attr'=>['
