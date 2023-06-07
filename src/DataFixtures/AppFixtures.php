@@ -26,6 +26,19 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        //Users
+        $users =[];
+        for ($i=0; $i <10 ; $i++) { 
+            $user = new User();
+            $user -> setName($this->faker->name())
+                ->setPseudo(mt_rand(0,1)===1 ? $this->faker->firstName():null)
+                ->setEmail($this->faker->email())
+                ->setRoles(['ROLE_USER'])
+                ->setPlainPassword("password");            
+            $users[]=$user;
+            $manager->persist($user);
+        }
+
         //data ingredient
         $ingredients =[];
         for ($i=0; $i < 50; $i++) { 
@@ -33,8 +46,9 @@ class AppFixtures extends Fixture
             //le nom prendra la chaine de caractère 'ingredient' avec la valeur de $i
             $ingredient ->setName($this->faker->word())
             //on fait un random entre 0 et 100 pour le prix
-                        ->setPrice(mt_rand(0,100));
+                        ->setPrice(mt_rand(0,100))
             //ajout de l'ingrédient dans le tableau
+                        ->setUser($users[mt_rand(0,count($users)-1)]);
             $ingredients[] = $ingredient;
 
             $manager->persist($ingredient);
@@ -56,18 +70,6 @@ class AppFixtures extends Fixture
                     }
             $manager->persist($recipe);
 
-        }
-
-        //Users
-        for ($i=0; $i <10 ; $i++) { 
-            $user = new User();
-            $user -> setName($this->faker->name())
-                ->setPseudo(mt_rand(0,1)===1 ? $this->faker->firstName():null)
-                ->setEmail($this->faker->email())
-                ->setRoles(['ROLE_USER'])
-                ->setPlainPassword("password");            
-
-            $manager->persist($user);
         }
 
         $manager->flush();
