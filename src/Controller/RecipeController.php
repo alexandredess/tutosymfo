@@ -7,6 +7,7 @@ use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,11 +25,12 @@ class RecipeController extends AbstractController
      */
 
     #[Route('/recette', name: 'app_recipe', methods:['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(RecipeRepository $recipeRepository, PaginatorInterface $paginator,Request $request): Response
     {
         
         $recipes = $paginator->paginate(
-            $recipeRepository->findAll(),
+            $recipeRepository->findBy(['user'=>$this->getUser()]),
             $request->query->getInt('page', 1), 
             10 
         );
@@ -39,6 +41,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/creation', name: 'app_recipe_new', methods:['GET','POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request,EntityManagerInterface $manager) : Response
     {
         $recipe = new Recipe();
@@ -47,6 +50,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $recipe =$form->getData();
+            $recipe->setuser($this->getUser());
 
             $manager->persist($recipe);
             $manager->flush();
@@ -67,6 +71,7 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/recette/edition/{id}', name:'app_recipe_edit',methods:['GET','POST'])]
+    #[IsGranted('ROLE_USER')]
     public function edit(RecipeRepository $recipeRepository,int $id,Request $request,EntityManagerInterface $manager):Response
     {
         $recipe = $recipeRepository->findOneBy(["id" => $id]) ;

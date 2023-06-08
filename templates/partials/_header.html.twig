@@ -6,10 +6,11 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Accueil
+          <a class="nav-link active" href="{{path('home.index')}}">Accueil
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
+        {% if app.user %}
         <li class="nav-item">
           <a class="nav-link active" href="{{path('app_ingredient')}}">Ingrédients
             <span class="visually-hidden">(current)</span>
@@ -20,7 +21,34 @@
             <span class="visually-hidden">(current)</span>
           </a>
         </li>
+        {% endif %}
       </ul>
+      <div class="d-flex">
+        <ul class="navbar-nav me-auto">
+          {% if app.user %}
+          <li class="nav-item dropdown " style="margin-right:5rem;">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{ app.user.name }}</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{{path('app_user_edit',{id : app.user.id})}}">Modifier mes informations</a>
+              <a class="dropdown-item" href="{{path('user_edit_password',{id : app.user.id})}}">Modifier mon mot de passe</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{{path('app_logout')}}">déconnexion</a>
+            </div>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{{path('app_login')}}">Se connecter
+              <span class="visually-hidden">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{path('app_registration')}}">S'inscrire
+              <span class="visually-hidden">(current)</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
   </div>
 </nav>
